@@ -40,7 +40,7 @@ The first word is for system data
 0        Memory Map Version (this program expects 2)
 1        Park Opens  (24 hour clock)
 2        Park Closes (24 hour clock)
-3        Available
+3        Monthly Reboot Count - System Health
 4        Daily Count Pointer
 5-5      Current Hourly Count Pointer (16-bit number)
 7        Control Register  (8 - 5 Reserved, 4- LEDs, 3-Start / Stop Test, 2-Warm Up, 1-LEDs)

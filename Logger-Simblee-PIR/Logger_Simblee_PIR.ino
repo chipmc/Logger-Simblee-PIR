@@ -73,31 +73,32 @@
 #endif // end IDE
 
 // Set parameters
-//These defines let me change the memory map without hunting through the whole program
-#define VERSIONNUMBER 7       // Increment this number each time the memory map is changed
-#define WORDSIZE 8            // For the Word size
-#define PAGESIZE 4096         // Memory size in bytes / word size - 256kb FRAM
+//These defines let me change the memory map and configuration without hunting through the whole program
+#define VERSIONNUMBER 7             // Increment this number each time the memory map is changed
+#define WORDSIZE 8                  // For the Word size
+#define PAGESIZE 4096               // Memory size in bytes / word size - 256kb FRAM
 // First Word - 8 bytes for setting global values
-#define DAILYOFFSET 2        // First word of daily counts
-#define HOURLYOFFSET 30        // First word of hourly counts (remember we start counts at 1)
-#define DAILYCOUNTNUMBER 28    // used in modulo calculations - sets the # of days stored
-#define HOURLYCOUNTNUMBER 4064 // used in modulo calculations - sets the # of hours stored - 256k (4096-14-2)
-#define VERSIONADDR 0x0       // Memory Locations By Name not Number
-#define PARKOPENSADDR 0x1   // When does the park open
-#define PARKCLOSESADDR 0x2        // when does the park close
-#define DAILYPOINTERADDR 0x4    // One byte for daily pointer
-#define HOURLYPOINTERADDR 0x5   // Two bytes for hourly pointer
-#define CONTROLREGISTER 0x7     // This is the control register acted on by both Simblee and Arduino
+#define DAILYOFFSET 2               // First word of daily counts
+#define HOURLYOFFSET 30             // First word of hourly counts (remember we start counts at 1)
+#define DAILYCOUNTNUMBER 28         // used in modulo calculations - sets the # of days stored
+#define HOURLYCOUNTNUMBER 4064      // used in modulo calculations - sets the # of hours stored - 256k (4096-14-2)
+#define VERSIONADDR 0x0             // Memory Locations By Name not Number
+#define PARKOPENSADDR 0x1           // When does the park open
+#define PARKCLOSESADDR 0x2          // when does the park close
+#define MONTHLYREBOOTCOUNT 0x3      // This is where we store the reboots - indication of system health
+#define DAILYPOINTERADDR 0x4        // One byte for daily pointer
+#define HOURLYPOINTERADDR 0x5       // Two bytes for hourly pointer
+#define CONTROLREGISTER 0x7         // This is the control register acted on by both Simblee and Arduino
 //Second Word - 8 bytes for storing current counts
-#define CURRENTHOURLYCOUNTADDR 0x8
-#define CURRENTDAILYCOUNTADDR 0xA
-#define CURRENTCOUNTSTIME 0xC
+#define CURRENTHOURLYCOUNTADDR 0x8  // Current Hourly Count
+#define CURRENTDAILYCOUNTADDR 0xA   // Current Daily Count
+#define CURRENTCOUNTSTIME 0xC       // Time of last count
 //These are the hourly and daily offsets that make up the respective words
-#define DAILYDATEOFFSET 1         //Offsets for the value in the daily words
-#define DAILYCOUNTOFFSET 2        // Count is a 16-bt value
-#define DAILYBATTOFFSET 4
+#define DAILYDATEOFFSET 1           //Offsets for the value in the daily words
+#define DAILYCOUNTOFFSET 2          // Count is a 16-bt value
+#define DAILYBATTOFFSET 4           // Where the battery charge is stored
 #define HOURLYCOUNTOFFSET 4         // Offsets for the values in the hourly words
-#define HOURLYBATTOFFSET 6
+#define HOURLYBATTOFFSET 6          // Where the hourly battery charge is stored
 // Finally, here are the variables I want to change often and pull them all together here
 #define DEVICENAME "Umstead"
 #define SERVICENAME "Graylyn"
@@ -577,7 +578,7 @@ void createCurrentScreen() // This is the screen that displays current status in
     ui_ParkClosesField = SimbleeForMobile.drawText(200, 260, ParkClosesBuffer);
     ui_adminLockIcon = SimbleeForMobile.drawText(40,340,"Admin Code:",RED);
     ui_adminAccessField = SimbleeForMobile.drawTextField(132,335,80,adminAccessInput);
-    snprintf(IDBuffer, 36,"%s - %s at version: %s",DEVICENAME,SERVICENAME,SOFTWARERELEASENUMBER);   // Identifies Device on Current screen
+    snprintf(IDBuffer, 36,"%s - %s at version: %s with %i reboots",DEVICENAME,SERVICENAME,SOFTWARERELEASENUMBER,FRAMread8(MONTHLYREBOOTCOUNT));   // Identifies Device on Current screen
     SimbleeForMobile.drawText(10,(SimbleeForMobile.screenHeight-20),IDBuffer);
     SimbleeForMobile.endScreen();
 }
