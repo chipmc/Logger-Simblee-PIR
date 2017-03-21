@@ -550,6 +550,7 @@ void createCurrentScreen() // This is the screen that displays current status in
     char IDBuffer[42];   // Should be enough for 16 chars of service and name, version and text
     char ParkOpensBuffer[5]; // Format Time
     char ParkClosesBuffer[5]; // Format Time
+    int rebootINT = 0;
     
     
     SimbleeForMobile.beginScreen(WHITE, PORTRAIT); // Sets orientation
@@ -574,11 +575,12 @@ void createCurrentScreen() // This is the screen that displays current status in
     ui_ParkOpensField = SimbleeForMobile.drawText(200, 240, ParkOpensBuffer);
     SimbleeForMobile.drawText(40, 260, "Park Closes: ");
     ParkCloses = FRAMread8(PARKCLOSESADDR);
+    rebootINT = FRAMread8(MONTHLYREBOOTCOUNT);
     snprintf(ParkClosesBuffer, 6,"%i:00",ParkCloses);// Puts :00 next to time
     ui_ParkClosesField = SimbleeForMobile.drawText(200, 260, ParkClosesBuffer);
     ui_adminLockIcon = SimbleeForMobile.drawText(40,340,"Admin Code:",RED);
     ui_adminAccessField = SimbleeForMobile.drawTextField(132,335,80,adminAccessInput);
-    snprintf(IDBuffer, 43,"%s - %s v%s - %i reboots",DEVICENAME,SERVICENAME,SOFTWARERELEASENUMBER,FRAMread8(MONTHLYREBOOTCOUNT));   // Identifies Device on Current screen
+    snprintf(IDBuffer, 43,"%s - %s v%s - %u reboots",DEVICENAME,SERVICENAME,SOFTWARERELEASENUMBER,rebootINT);   // Identifies Device on Current screen
     SimbleeForMobile.drawText(10,(SimbleeForMobile.screenHeight-20),IDBuffer);
     SimbleeForMobile.endScreen();
 }
