@@ -102,7 +102,7 @@
 // Finally, here are the variables I want to change often and pull them all together here
 #define DEVICENAME "Umstead"
 #define SERVICENAME "Graylyn"
-#define SOFTWARERELEASENUMBER "0.2.3"
+#define SOFTWARERELEASENUMBER "1.0.0"
 
 
 
@@ -547,7 +547,7 @@ void ui_event(event_t &event)   // This is where we define the actions to occur 
 
 void createCurrentScreen() // This is the screen that displays current status information
 {
-    char IDBuffer[35];   // Should be enough for 16 chars of service and name, version and text
+    char IDBuffer[42];   // Should be enough for 16 chars of service and name, version and text
     char ParkOpensBuffer[5]; // Format Time
     char ParkClosesBuffer[5]; // Format Time
     
@@ -578,7 +578,7 @@ void createCurrentScreen() // This is the screen that displays current status in
     ui_ParkClosesField = SimbleeForMobile.drawText(200, 260, ParkClosesBuffer);
     ui_adminLockIcon = SimbleeForMobile.drawText(40,340,"Admin Code:",RED);
     ui_adminAccessField = SimbleeForMobile.drawTextField(132,335,80,adminAccessInput);
-    snprintf(IDBuffer, 36,"%s - %s at version: %s with %i reboots",DEVICENAME,SERVICENAME,SOFTWARERELEASENUMBER,FRAMread8(MONTHLYREBOOTCOUNT));   // Identifies Device on Current screen
+    snprintf(IDBuffer, 43,"%s - %s v%s - %i reboots",DEVICENAME,SERVICENAME,SOFTWARERELEASENUMBER,FRAMread8(MONTHLYREBOOTCOUNT));   // Identifies Device on Current screen
     SimbleeForMobile.drawText(10,(SimbleeForMobile.screenHeight-20),IDBuffer);
     SimbleeForMobile.endScreen();
 }
