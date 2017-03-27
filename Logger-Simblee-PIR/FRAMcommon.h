@@ -142,6 +142,7 @@ void ResetFRAM()  // This will reset the FRAM - set the version and preserve del
         if (i==16384) Serial.println(F("50% done"));
         if (i==(24576)) Serial.println(F("75% done"));
         if (i==32767) Serial.println(F("Done"));
+        delay(1);
     }
     FRAMwrite8(VERSIONADDR,VERSIONNUMBER);  // Reset version to match #define value for sketch
 }

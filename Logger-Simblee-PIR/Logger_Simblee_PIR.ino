@@ -102,7 +102,7 @@
 // Finally, here are the variables I want to change often and pull them all together here
 #define DEVICENAME "Umstead"
 #define SERVICENAME "Graylyn"
-#define SOFTWARERELEASENUMBER "1.0.0"
+#define SOFTWARERELEASENUMBER "1.0.1"
 
 
 
@@ -205,6 +205,7 @@ int ui_dailyField;     // Date feild ID for Hourly Tab
 int ui_chargeField;    // State of charge field ID on Current Tab
 int ui_ParkOpensField;  // When does the park open on Current Tab
 int ui_ParkClosesField; // When does the park close on Current Tab
+int ui_monthlyReboots;  //  How many times has the system rebooted this month
 int ui_ParkOpensStepper;    // Update Open Hour on Admin Tab
 int ui_ParkClosesStepper;   // Update Close Hour on Admin Tab
 int ui_OpensUpdateField;      // For the Admin screen on Admin Tab
@@ -547,12 +548,10 @@ void ui_event(event_t &event)   // This is where we define the actions to occur 
 
 void createCurrentScreen() // This is the screen that displays current status information
 {
-    char IDBuffer[42];   // Should be enough for 16 chars of service and name, version and text
+    char IDBuffer[35];   // Should be enough for 16 chars of service and name, version and text
     char ParkOpensBuffer[5]; // Format Time
     char ParkClosesBuffer[5]; // Format Time
-    int rebootINT = 0;
-    
-    
+
     SimbleeForMobile.beginScreen(WHITE, PORTRAIT); // Sets orientation
     ui_menuBar = SimbleeForMobile.drawSegment(20, 70, 280, titles, countof(titles));
     SimbleeForMobile.updateValue(ui_menuBar, 0);
@@ -574,13 +573,14 @@ void createCurrentScreen() // This is the screen that displays current status in
     snprintf(ParkOpensBuffer, 6,"%i:00",ParkOpens);   // Puts :00 next to time
     ui_ParkOpensField = SimbleeForMobile.drawText(200, 240, ParkOpensBuffer);
     SimbleeForMobile.drawText(40, 260, "Park Closes: ");
+    SimbleeForMobile.drawText(40, 280, "Reboots: ");
+    ui_monthlyReboots = SimbleeForMobile.drawText(200, 280, " ");
     ParkCloses = FRAMread8(PARKCLOSESADDR);
-    rebootINT = FRAMread8(MONTHLYREBOOTCOUNT);
     snprintf(ParkClosesBuffer, 6,"%i:00",ParkCloses);// Puts :00 next to time
     ui_ParkClosesField = SimbleeForMobile.drawText(200, 260, ParkClosesBuffer);
     ui_adminLockIcon = SimbleeForMobile.drawText(40,340,"Admin Code:",RED);
     ui_adminAccessField = SimbleeForMobile.drawTextField(132,335,80,adminAccessInput);
-    snprintf(IDBuffer, 43,"%s - %s v%s - %u reboots",DEVICENAME,SERVICENAME,SOFTWARERELEASENUMBER,rebootINT);   // Identifies Device on Current screen
+    snprintf(IDBuffer, 36,"%s - %s v%s",DEVICENAME,SERVICENAME,SOFTWARERELEASENUMBER);   // Identifies Device on Current screen
     SimbleeForMobile.drawText(10,(SimbleeForMobile.screenHeight-20),IDBuffer);
     SimbleeForMobile.endScreen();
 }
@@ -638,6 +638,7 @@ void updateCurrentScreen() // Since we have to update this screen three ways: cr
     snprintf(ParkClosesBuffer,6,"%i:00",ParkCloses);
     SimbleeForMobile.updateText(ui_ParkClosesField, ParkClosesBuffer);
     
+    SimbleeForMobile.updateValue(ui_monthlyReboots, FRAMread8(MONTHLYREBOOTCOUNT));
     
     if (adminUnlocked) {
         SimbleeForMobile.updateValue(ui_adminAccessField,adminAccessInput);
